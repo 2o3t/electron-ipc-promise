@@ -1,0 +1,27 @@
+{
+    "name": "@2o3t/electron-ipc-promise",
+    "version": "0.0.1",
+    "author": "zyao89 <zyao89@gmail.com>",
+    "description": "An electron IPC calls with a promise API.",
+    "license": "MIT",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "bluebird": "^3.5.5",
+        "is-electron-renderer": "^2.0.1",
+        "serialize-error": "^4.1.0",
+        "uuid": "^3.3.2"
+    },
+    "keywords": [
+        "2o3t",
+        "electron",
+        "promise",
+        "ipc"
+    ],
+    "devDependencies": {
+        "eslint": "^5.16.0",
+        "eslint-config-2o3t": "^1.1.4"
+    }
+}
