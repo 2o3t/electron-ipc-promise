@@ -2,8 +2,12 @@
 
 const isRenderer = require('is-electron-renderer');
 
+let outModule = null;
 if (isRenderer) {
-    module.exports = require('./src/renderer');
+    outModule = require('./src/renderer');
 } else {
-    module.exports = require('./src/main');
+    outModule = require('./src/main');
 }
+
+outModule.ACTIONS = require('./src/actions');
+module.exports = outModule;
