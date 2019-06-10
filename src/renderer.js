@@ -12,6 +12,10 @@ class RendererPromiseIPC extends BasePromiseIPC {
     send(route, ...dataArgs) {
         return super.send(route, ipcRenderer, ...dataArgs);
     }
+
+    sendTo(route, winID, ...dataArgs) {
+        return this.send(this.BRIDGE_ROUTE, { winID, route }, ...dataArgs);
+    }
 }
 
 // 默认 30s

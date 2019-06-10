@@ -13,6 +13,8 @@ class BasePromiseIPC {
         this.eventEmitter = eventEmitter;
         this.routeListenerMap = new Map();
         this.listenerMap = new Map();
+        // 桥
+        this.BRIDGE_ROUTE = Symbol('bridge_route');
     }
 
     send(route, sender, ...dataArgs) {
