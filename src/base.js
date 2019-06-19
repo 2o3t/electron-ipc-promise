@@ -9,10 +9,12 @@ class BasePromiseIPC {
         if (!eventEmitter) throw new Error('Please either ipcRenderer or ipcMain');
         if (opts) {
             this.maxTimeoutMs = opts.maxTimeoutMs;
+            // TODO namespace
         }
         this.eventEmitter = eventEmitter;
         this.routeListenerMap = new Map();
         this.listenerMap = new Map();
+        this.watchMap = new Map();
         // 桥
         this.BRIDGE_ROUTE = Symbol('bridge_route');
     }
@@ -50,6 +52,7 @@ class BasePromiseIPC {
     }
 
     on(route, listener) {
+        if (!listener || typeof listener !== 'function') return;
         const prevListener = this.routeListenerMap.get(route);
         // If listener has already been added for this route, don't add it again.
         if (prevListener === listener) {
@@ -81,6 +84,7 @@ class BasePromiseIPC {
     }
 
     off(route, listener) {
+        if (!listener || typeof listener !== 'function') return;
         const registeredListener = this.routeListenerMap.get(route);
         if (listener && listener !== registeredListener) {
             return; // trying to remove the wrong listener, so do nothing.
@@ -89,6 +93,30 @@ class BasePromiseIPC {
         this.eventEmitter.removeListener(route, wrappedListener);
         this.listenerMap.delete(registeredListener);
         this.routeListenerMap.delete(route);
+    }
+
+    watch(route, listener) {
+        if (!listener || typeof listener !== 'function') return;
+        let watchArrs = this.watchMap.get(route);
+        if (!watchArrs) watchArrs = new Set();
+        const findOne = [ ...watchArrs ].find(item => {
+            return item._listener && listener && item._listener === listener;
+        });
+        if (findOne) {
+            return findOne;
+        }
+        const wrappedListener = () => {
+            this.eventEmitter.removeListener(route, wrappedListener.listener);
+            watchArrs.delete(wrappedListener);
+        };
+        wrappedListener._listener = listener;
+        wrappedListener.listener = (event, replyChannel, ...dataArgs) => {
+            Promise.resolve()
+                .then(() => listener(...dataArgs, replyChannel));
+        };
+        watchArrs.add(wrappedListener);
+        this.eventEmitter.on(route, wrappedListener.listener);
+        return wrappedListener;
     }
 }
 
