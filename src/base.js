@@ -87,12 +87,13 @@ class BasePromiseIPC {
         if (!listener || typeof listener !== 'function') return;
         const registeredListener = this.routeListenerMap.get(route);
         if (listener && listener !== registeredListener) {
-            return; // trying to remove the wrong listener, so do nothing.
+            return this; // trying to remove the wrong listener, so do nothing.
         }
         const wrappedListener = this.listenerMap.get(registeredListener);
         this.eventEmitter.removeListener(route, wrappedListener);
         this.listenerMap.delete(registeredListener);
         this.routeListenerMap.delete(route);
+        return this;
     }
 
     watch(route, listener) {

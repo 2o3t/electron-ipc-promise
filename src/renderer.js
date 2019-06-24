@@ -21,6 +21,6 @@ class RendererPromiseIPC extends BasePromiseIPC {
 // 默认 30s
 const rendererExport = new RendererPromiseIPC({ maxTimeoutMs: 1000 * 30 });
 rendererExport.PromiseIpc = RendererPromiseIPC;
-rendererExport.PromiseIpcMain = RendererPromiseIPC;
+rendererExport.PromiseIpcRenderer = RendererPromiseIPC;
 
 module.exports = rendererExport;
